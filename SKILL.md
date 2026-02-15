@@ -36,6 +36,45 @@ metadata:
 
 ---
 
+## ⚠️ Security Warning
+
+This toolkit handles private keys and can send real cryptocurrency transactions. Please read these security guidelines carefully.
+
+### Always Use Testnet First
+
+```bash
+# Set testnet RPC for development
+export SOLANA_RPC_URL=https://api.testnet.solana.com
+
+# Only switch to mainnet after thorough testing
+export SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+```
+
+### Best Practices
+
+1. **Use a Dedicated Wallet** — Never use your main wallet. Create a separate wallet with limited funds for agent trading.
+
+2. **Set Spending Limits** — Configure maximum transaction amounts to prevent catastrophic losses.
+
+3. **Enable Confirmations** — Always confirm large transactions with the human operator.
+
+4. **Store Private Keys Securely** — Use environment variables, never hardcode private keys in code.
+
+5. **Monitor Activity** — Regularly review transaction history and wallet balances.
+
+### Recommended Configuration
+
+```javascript
+// Recommended: Use environment variables for sensitive data
+const config = {
+  rpcUrl: process.env.SOLANA_RPC_URL,
+  // NEVER hardcode private keys in source code
+  // Use: process.env.AGENT_PRIVATE_KEY instead
+};
+```
+
+---
+
 ## Why OpenClaw Solana Connect?
 
 Most Solana toolkits are designed for human developers to integrate into their apps. This toolkit is different:
@@ -56,30 +95,24 @@ clawhub install solana-connect
 # Or clone manually
 git clone https://github.com/Seenfinity/openclaw-solana-connect.git
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ### Configuration
 
 Set your Solana RPC endpoint:
 
 ```bash
-# Recommended: Helius (free tier available)
+# For testing (RECOMMENDED FIRST)
+export SOLANA_RPC_URL=https://api.testnet.solana.com
+
+# For production (mainnet)
 export SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
-# Or use Helius: https://api.mainnet.helius-rpc.com
+
+# Or use Helius (free tier available)
+export SOLANA_RPC_URL=https://api.mainnet.helius-rpc.com
 ```
+
+---
+
 ## Testing
 
 ```bash
@@ -138,20 +171,6 @@ const balance = await getBalance(walletAddress);
 // Send SOL
 const tx = await sendSol(fromWallet, toAddress, amountInSol);
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ---
 
@@ -167,20 +186,6 @@ const tokens = await getTokenAccounts(agentWallet);
 // 3. Execute trade (via DEX integration)
 // const result = await swapToken(inputMint, outputMint, amount);
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ---
 
@@ -199,20 +204,6 @@ const wallet = await connectWallet('your-private-key-base58');
 // Generate new wallet (returns { address, privateKey })
 const newWallet = await connectWallet();
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ### `getBalance`
 
@@ -224,20 +215,6 @@ const { getBalance } = require('./scripts/solana.js');
 const balance = await getBalance('SolanaAddress');
 // Returns: { sol: 12.5, tokens: [...], nfts: [...] }
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ### `sendSol`
 
@@ -248,20 +225,6 @@ const { sendSol } = require('./scripts/solana.js');
 
 const tx = await sendSol(fromWallet, toAddress, 1.0); // 1 SOL
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ### `getTokenAccounts`
 
@@ -272,20 +235,6 @@ const { getTokenAccounts } = require('./scripts/solana.js');
 
 const tokens = await getTokenAccounts(walletAddress);
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ### `sendToken`
 
@@ -296,20 +245,6 @@ const { sendToken } = require('./scripts/solana.js');
 
 const tx = await sendToken(fromWallet, toAddress, tokenMint, amount);
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ---
 
@@ -335,20 +270,6 @@ AI agents that analyze on-chain data and generate insights.
 ## Architecture
 
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 ┌─────────────────────────────────────────────────────┐
 │                   OpenClaw Agent                    │
 │                  (Your AI Agent)                    │
@@ -367,20 +288,6 @@ All tests pass:
 │                  Solana RPC                         │
 └─────────────────────────────────────────────────────┘
 ```
-## Testing
-
-```bash
-cd solana-connect
-npm install
-node test.js
-```
-
-All tests pass:
-- ✅ Generate wallet
-- ✅ Connect to Solana RPC
-- ✅ Get balance
-- ✅ Get token accounts
-- ✅ Get transactions
 
 ---
 
@@ -408,6 +315,7 @@ All tests pass:
 - 🌐 **GitHub**: [github.com/Seenfinity/openclaw-solana-connect](https://github.com/Seenfinity/openclaw-solana-connect)
 - 📖 **Solana Docs**: [docs.solana.com](https://docs.solana.com)
 - 🔧 **Helius RPC**: [helius.dev](https://helius.dev)
+- 🛡️ **Solana Security**: [docs.solana.com/security](https://docs.solana.com/security)
 
 ---
 

@@ -1,66 +1,87 @@
-# 🔗 OpenClaw Solana Connect
+# OpenClaw Solana Connect
 
 > The missing link between OpenClaw agents and Solana blockchain
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Solana](https://img.shields.io/badge/Built%20for-Solana-blue?style=flat-square)](https://solana.com)
+A purpose-built toolkit that enables autonomous AI agents running on OpenClaw to interact seamlessly with the Solana blockchain.
+
+## ⚠️ Security Warning
+
+This toolkit handles private keys and can send real cryptocurrency transactions. Please read these security guidelines carefully.
+
+### Always Use Testnet First
+
+```bash
+# Set testnet RPC for development (RECOMMENDED)
+export SOLANA_RPC_URL=https://api.testnet.solana.com
+
+# Only switch to mainnet after thorough testing
+export SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+```
+
+### Best Practices
+
+1. **Use a Dedicated Wallet** — Never use your main wallet. Create a separate wallet with limited funds for agent trading.
+
+2. **Set Spending Limits** — Configure maximum transaction amounts:
+   ```bash
+   export MAX_SOL_PER_TX=10      # Max 10 SOL per transaction
+   export MAX_TOKENS_PER_TX=1000 # Max 1000 tokens per transaction
+   ```
+
+3. **Enable Dry Run Mode** — Test transactions before sending:
+   ```javascript
+   const result = await sendSol(wallet, toAddress, amount, { dryRun: true });
+   ```
+
+4. **Store Private Keys Securely** — Use environment variables, never hardcode:
+   ```javascript
+   // ✅ Good
+   const wallet = await connectWallet(process.env.AGENT_PRIVATE_KEY);
+   
+   // ❌ Bad - never do this
+   const wallet = await connectWallet('your-private-key-here');
+   ```
+
+5. **Monitor Activity** — Regularly review transaction history and wallet balances.
 
 ---
 
-## What is OpenClaw Solana Connect?
+## Features
 
-**OpenClaw Solana Connect** is a purpose-built toolkit that enables autonomous AI agents running on OpenClaw to interact seamlessly with the Solana blockchain.
-
-While most Solana toolkits are designed for human developers, this toolkit is built specifically for AI agents:
-
-- 🧠 **AI-First Design** — Natural language inputs, automatic validation
+- 🧠 **AI-First Design** — Built for autonomous agents
 - 🔄 **OpenClaw Native** — Works out of the box with OpenClaw skills
-- 🤖 **Agent-Friendly** — Autonomous, programmable blockchain interactions
-- 🛡️ **Secure by Default** — Sandboxed transactions, clear permissions
+- 🤖 **Agent-Friendly** — Natural language inputs, automatic validation
+- 🛡️ **Secure by Default** — Sandboxed transactions, amount limits, dry-run mode
 
----
+### Wallet Operations
+- Generate new wallets
+- Connect existing wallets
+- Check balances (SOL, tokens, NFTs)
+- Transaction history
 
-## Why This Toolkit?
+### Transaction Operations
+- Send SOL
+- Send SPL tokens
+- Dry-run mode (simulate before send)
 
-AI agents on OpenClaw can now:
-
-1. **Manage wallets** — Generate, connect, track
-2. **Send transactions** — SOL, tokens, NFTs
-3. **Analyze on-chain data** — Balances, history, DeFi
-4. **Execute strategies** — Autonomous trading, yield optimization
+### Token Operations
+- Get token balances
+- Get NFT holdings
+- Token metadata
 
 ---
 
 ## Installation
 
-### Via ClawHub (Recommended)
-
 ```bash
+# Install via ClawHub
 clawhub install solana-connect
-```
 
-### Manual
-
-```bash
+# Or clone manually
 git clone https://github.com/Seenfinity/openclaw-solana-connect.git
-cd openclaw-solana-connect
-npm install @solana/web3.js @solana/spl-token bs58
+cd solana-connect
+npm install
 ```
-
----
-
-## Configuration
-
-Set your Solana RPC endpoint:
-
-```bash
-export SOLANA_RPC_URL=https://api.mainnet.helius-rpc.com
-```
-
-**Recommended RPCs:**
-- Helius (free tier) — `https://api.mainnet.helius-rpc.com`
-- QuickNode — `https://api.mainnet-beta.quiknode.pro/...`
-- Default — `https://api.mainnet-beta.solana.com`
 
 ---
 
@@ -69,164 +90,67 @@ export SOLANA_RPC_URL=https://api.mainnet.helius-rpc.com
 ```javascript
 const { connectWallet, getBalance, sendSol } = require('./scripts/solana.js');
 
-// Generate new wallet for your agent
-const wallet = await connectWallet();
-// Returns: { address, privateKey }
-
-// Or connect existing
-const existing = await connectWallet('your-base58-private-key');
+// Connect with a private key
+const wallet = await connectWallet(process.env.AGENT_PRIVATE_KEY);
 
 // Check balance
 const balance = await getBalance(wallet.address);
-// Returns: { sol: 12.5, tokens: [...], nfts: [...] }
 
-// Send SOL
-const tx = await sendSol(wallet.privateKey, 'recipient-address', 1.0);
+// Send SOL (with dry-run first!)
+const result = await sendSol(wallet.privateKey, toAddress, 1.0, { dryRun: true });
+console.log('Simulation:', result);
+
+// If OK, send for real
+const tx = await sendSol(wallet.privateKey, toAddress, 1.0);
+console.log('Transaction:', tx.signature);
 ```
 
 ---
 
-## Functions
+## Configuration
 
-| Function | Description |
-|----------|-------------|
-| `connectWallet(privateKey?)` | Generate new or connect existing wallet |
-| `getBalance(address)` | Get SOL, tokens, NFTs |
-| `sendSol(from, to, amount)` | Send SOL |
-| `getTokenAccounts(address)` | List all token holdings |
-| `sendToken(from, to, mint, amount)` | Send SPL tokens |
-| `getTransactions(address, limit)` | Get transaction history |
-| `getConnection(rpcUrl?)` | Get Solana connection instance |
+```bash
+# Required: RPC endpoint
+export SOLANA_RPC_URL=https://api.testnet.solana.com
+
+# Optional: Security limits
+export MAX_SOL_PER_TX=10
+export MAX_TOKENS_PER_TX=1000
+```
+
+---
 
 ## Testing
-
-Run the test suite to verify everything works:
 
 ```bash
 npm install
 node test.js
 ```
 
-Expected output:
-```
-🧪 OpenClaw Solana Connect - Test Suite
-
-Test 1: Generate new wallet...
-  ✅ PASSED
-Test 2: Connect to Solana RPC...
-  ✅ PASSED
-Test 3: Get balance for known address...
-  ✅ PASSED
-Test 4: Get token accounts...
-  ✅ PASSED
-Test 5: Get recent transactions...
-  ✅ PASSED
-
-🎉 All tests passed!
-```
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ---
 
-## Use Cases
+## Documentation
 
-### 1. Autonomous Trading
-Build AI agents that autonomously trade on Solana DEXs based on market analysis.
-
-### 2. NFT Floor Monitor
-Create agents that monitor NFT collections and alert on price changes.
-
-### 3. DeFi Analytics
-Agents that analyze on-chain data and generate DeFi insights.
-
-### 4. Wallet Manager
-Automated portfolio management and payments.
+See [SKILL.md](./SKILL.md) for full documentation.
 
 ---
 
-## Example: Agent Portfolio Tracker
+## GitHub
 
-```javascript
-const { getBalance, getTransactions } = require('./scripts/solana.js');
-
-async function trackPortfolio(walletAddress) {
-  // Get current holdings
-  const balance = await getBalance(walletAddress);
-  
-  // Get recent activity
-  const history = await getTransactions(walletAddress, 10);
-  
-  return {
-    sol: balance.sol,
-    tokens: balance.tokens.length,
-    nfts: balance.nfts.length,
-    recentTxs: history.length
-  };
-}
-```
-
----
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────┐
-│            OpenClaw Agent                    │
-│         (Your AI Agent)                      │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│       OpenClaw Solana Connect                │
-│  ┌─────────┐ ┌──────────┐ ┌─────────────┐   │
-│  │ Wallet  │ │Transaction│ │   Token    │   │
-│  │ Manager │ │  Handler  │ │  Manager   │   │
-│  └─────────┘ └──────────┘ └─────────────┘   │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│         @solana/web3.js                     │
-│            Solana RPC                        │
-└─────────────────────────────────────────────┘
-```
-
----
-
-## Requirements
-
-- OpenClaw agent
-- Node.js 18+
-- Solana RPC endpoint
-
----
-
-## Roadmap
-
-- [x] Basic wallet operations
-- [x] SOL transfers
-- [x] Token operations
-- [x] Transaction history
-- [ ] NFT-specific functions
-- [ ] DeFi integrations (Jupiter, Raydium)
-- [ ] MCP server mode
-
----
-
-## Related Projects
-
-- [Presage](https://github.com/Seenfinity/presage-skill) — AI Prediction Market Skill
-- [solana-agent-kit](https://github.com/sendaifun/solana-agent-kit) — General Solana agent toolkit
+[github.com/Seenfinity/openclaw-solana-connect](https://github.com/Seenfinity/openclaw-solana-connect)
 
 ---
 
 ## License
 
 MIT © 2026 Seenfinity
-
----
-
-## Connect
-
-- GitHub: [github.com/Seenfinity](https://github.com/Seenfinity)
-- OpenClaw: [openclaw.ai](https://openclaw.ai)
 
 ---
 

@@ -1,13 +1,23 @@
 /**
  * OpenClaw Solana Connect
  * A toolkit for OpenClaw agents to interact with Solana blockchain
+ * 
+ * SECURITY NOTICE:
+ * - Always test on testnet first
+ * - Use a dedicated wallet with limited funds
+ * - Never hardcode private keys - use environment variables
+ * - Set transaction limits to prevent losses
  */
 
 const { Connection, PublicKey, Keypair, Transaction, SystemProgram } = require('@solana/web3.js');
 const { getAssociatedTokenAddress, getAccount, transfer: splTransfer, createTransferInstruction } = require('@solana/spl-token');
 
 // Default RPC (can be overridden via env)
-const DEFAULT_RPC = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
+const DEFAULT_RPC = process.env.SOLANA_RPC_URL || 'https://api.testnet.solana.com';
+
+// Security: Default limits
+const DEFAULT_MAX_SOL = parseFloat(process.env.MAX_SOL_PER_TX) || 10; // Max 10 SOL per tx by default
+const DEFAULT_MAX_TOKENS = parseFloat(process.env.MAX_TOKENS_PER_TX) || 1000;
 
 /**
  * Get Solana connection
@@ -17,9 +27,18 @@ function getConnection(rpcUrl = DEFAULT_RPC) {
 }
 
 /**
+ * Check if running on testnet or mainnet
+ */
+function isTestNet(rpcUrl = DEFAULT_RPC) {
+  return rpcUrl.includes('testnet') || rpcUrl.includes('devnet');
+}
+
+/**
  * Connect wallet from private key
  * @param {string} privateKeyBase58 - Base58 encoded private key (optional, generates new if not provided)
  * @returns {Object} { address, privateKey }
+ * 
+ * SECURITY: Never log or expose private keys
  */
 async function connectWallet(privateKeyBase58 = null) {
   if (!privateKeyBase58) {
@@ -96,13 +115,47 @@ async function getBalance(address, rpcUrl = DEFAULT_RPC) {
 }
 
 /**
+ * Validate transaction amount against limits
+ * @throws Error if amount exceeds limits
+ */
+function validateAmount(amount, maxAmount, tokenName = 'SOL') {
+  if (amount > maxAmount) {
+    throw new Error(
+      `SECURITY: Amount ${amount} ${tokenName} exceeds maximum allowed (${maxAmount} ${tokenName}). ` +
+      `Set MAX_SOL_PER_TX or MAX_TOKENS_PER_TX environment variable to override.`
+    );
+  }
+}
+
+/**
+ * Warn if running on mainnet
+ */
+function warnMainnet(rpcUrl = DEFAULT_RPC) {
+  if (!isTestNet(rpcUrl)) {
+    console.warn('⚠️  WARNING: Running on MAINNET. Ensure you are using a wallet with limited funds.');
+    console.warn('💡 Tip: Test on testnet first: export SOLANA_RPC_URL=https://api.testnet.solana.com');
+  }
+}
+
+/**
  * Send SOL from one address to another
  * @param {string} fromPrivateKey - Sender's private key (base58 or array)
  * @param {string} toAddress - Recipient address
  * @param {number} amountInSol - Amount in SOL
+ * @param {Object} options - Optional: { dryRun: true/false }
  * @returns {Object} Transaction result
+ * 
+ * SECURITY: Validates amount against limits and warns on mainnet
  */
-async function sendSol(fromPrivateKey, toAddress, amountInSol, rpcUrl = DEFAULT_RPC) {
+async function sendSol(fromPrivateKey, toAddress, amountInSol, options = {}, rpcUrl = DEFAULT_RPC) {
+  const { dryRun = false } = options;
+  
+  // Warn on mainnet
+  warnMainnet(rpcUrl);
+  
+  // Validate amount
+  validateAmount(amountInSol, DEFAULT_MAX_SOL, 'SOL');
+  
   const connection = getConnection(rpcUrl);
   
   // Parse private key
@@ -127,6 +180,20 @@ async function sendSol(fromPrivateKey, toAddress, amountInSol, rpcUrl = DEFAULT_
     })
   );
   
+  // Dry run mode - simulate only
+  if (dryRun) {
+    const simulation = await connection.simulateTransaction(transaction);
+    return {
+      dryRun: true,
+      simulated: true,
+      result: simulation.value,
+      from: keypair.publicKey.toBase58(),
+      to: toAddress,
+      amount: amountInSol,
+      timestamp: new Date().toISOString()
+    };
+  }
+  
   // Sign and send
   const signature = await connection.sendTransaction(transaction, [keypair]);
   
@@ -135,7 +202,8 @@ async function sendSol(fromPrivateKey, toAddress, amountInSol, rpcUrl = DEFAULT_
     from: keypair.publicKey.toBase58(),
     to: toAddress,
     amount: amountInSol,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    network: isTestNet(rpcUrl) ? 'testnet' : 'mainnet'
   };
 }
 
@@ -172,9 +240,20 @@ async function getTokenAccounts(address, rpcUrl = DEFAULT_RPC) {
  * @param {string} toAddress - Recipient address
  * @param {string} tokenMint - Token mint address
  * @param {number} amount - Amount to send
+ * @param {Object} options - Optional: { dryRun: true/false }
  * @returns {Object} Transaction result
+ * 
+ * SECURITY: Validates amount against limits and warns on mainnet
  */
-async function sendToken(fromPrivateKey, toAddress, tokenMint, amount, rpcUrl = DEFAULT_RPC) {
+async function sendToken(fromPrivateKey, toAddress, tokenMint, amount, options = {}, rpcUrl = DEFAULT_RPC) {
+  const { dryRun = false } = options;
+  
+  // Warn on mainnet
+  warnMainnet(rpcUrl);
+  
+  // Validate amount
+  validateAmount(amount, DEFAULT_MAX_TOKENS, 'tokens');
+  
   const connection = getConnection(rpcUrl);
   
   // Parse private key
@@ -209,6 +288,21 @@ async function sendToken(fromPrivateKey, toAddress, tokenMint, amount, rpcUrl = 
   
   // Send transaction
   const transaction = new Transaction().add(instruction);
+  
+  // Dry run mode
+  if (dryRun) {
+    const simulation = await connection.simulateTransaction(transaction);
+    return {
+      dryRun: true,
+      simulated: true,
+      result: simulation.value,
+      token: tokenMint,
+      from: keypair.publicKey.toBase58(),
+      to: toAddress,
+      amount
+    };
+  }
+  
   const signature = await connection.sendTransaction(transaction, [keypair]);
   
   return {
@@ -216,7 +310,8 @@ async function sendToken(fromPrivateKey, toAddress, tokenMint, amount, rpcUrl = 
     token: tokenMint,
     from: keypair.publicKey.toBase58(),
     to: toAddress,
-    amount
+    amount,
+    network: isTestNet(rpcUrl) ? 'testnet' : 'mainnet'
   };
 }
 
@@ -247,5 +342,12 @@ module.exports = {
   getTokenAccounts,
   sendToken,
   getTransactions,
-  getConnection
+  getConnection,
+  isTestNet,
+  // Security utilities
+  validateAmount,
+  warnMainnet,
+  // Constants
+  DEFAULT_MAX_SOL,
+  DEFAULT_MAX_TOKENS
 };
