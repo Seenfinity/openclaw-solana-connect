@@ -96,6 +96,34 @@ const tx = await sendSol(wallet.privateKey, 'recipient-address', 1.0);
 | `getTokenAccounts(address)` | List all token holdings |
 | `sendToken(from, to, mint, amount)` | Send SPL tokens |
 | `getTransactions(address, limit)` | Get transaction history |
+| `getConnection(rpcUrl?)` | Get Solana connection instance |
+
+## Testing
+
+Run the test suite to verify everything works:
+
+```bash
+npm install
+node test.js
+```
+
+Expected output:
+```
+🧪 OpenClaw Solana Connect - Test Suite
+
+Test 1: Generate new wallet...
+  ✅ PASSED
+Test 2: Connect to Solana RPC...
+  ✅ PASSED
+Test 3: Get balance for known address...
+  ✅ PASSED
+Test 4: Get token accounts...
+  ✅ PASSED
+Test 5: Get recent transactions...
+  ✅ PASSED
+
+🎉 All tests passed!
+```
 
 ---
 

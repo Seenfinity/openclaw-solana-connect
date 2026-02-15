@@ -56,6 +56,20 @@ clawhub install solana-connect
 # Or clone manually
 git clone https://github.com/Seenfinity/openclaw-solana-connect.git
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ### Configuration
 
@@ -66,6 +80,20 @@ Set your Solana RPC endpoint:
 export SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 # Or use Helius: https://api.mainnet.helius-rpc.com
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ---
 
@@ -110,6 +138,20 @@ const balance = await getBalance(walletAddress);
 // Send SOL
 const tx = await sendSol(fromWallet, toAddress, amountInSol);
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ---
 
@@ -125,6 +167,20 @@ const tokens = await getTokenAccounts(agentWallet);
 // 3. Execute trade (via DEX integration)
 // const result = await swapToken(inputMint, outputMint, amount);
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ---
 
@@ -143,6 +199,20 @@ const wallet = await connectWallet('your-private-key-base58');
 // Generate new wallet (returns { address, privateKey })
 const newWallet = await connectWallet();
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ### `getBalance`
 
@@ -154,6 +224,20 @@ const { getBalance } = require('./scripts/solana.js');
 const balance = await getBalance('SolanaAddress');
 // Returns: { sol: 12.5, tokens: [...], nfts: [...] }
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ### `sendSol`
 
@@ -164,6 +248,20 @@ const { sendSol } = require('./scripts/solana.js');
 
 const tx = await sendSol(fromWallet, toAddress, 1.0); // 1 SOL
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ### `getTokenAccounts`
 
@@ -174,6 +272,20 @@ const { getTokenAccounts } = require('./scripts/solana.js');
 
 const tokens = await getTokenAccounts(walletAddress);
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ### `sendToken`
 
@@ -184,6 +296,20 @@ const { sendToken } = require('./scripts/solana.js');
 
 const tx = await sendToken(fromWallet, toAddress, tokenMint, amount);
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ---
 
@@ -209,6 +335,20 @@ AI agents that analyze on-chain data and generate insights.
 ## Architecture
 
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 ┌─────────────────────────────────────────────────────┐
 │                   OpenClaw Agent                    │
 │                  (Your AI Agent)                    │
@@ -227,6 +367,20 @@ AI agents that analyze on-chain data and generate insights.
 │                  Solana RPC                         │
 └─────────────────────────────────────────────────────┘
 ```
+## Testing
+
+```bash
+cd solana-connect
+npm install
+node test.js
+```
+
+All tests pass:
+- ✅ Generate wallet
+- ✅ Connect to Solana RPC
+- ✅ Get balance
+- ✅ Get token accounts
+- ✅ Get transactions
 
 ---
 
