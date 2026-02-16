@@ -9,40 +9,6 @@ metadata:
           {
             "env": ["SOLANA_RPC_URL", "MAX_SOL_PER_TX", "MAX_TOKENS_PER_TX"],
           },
-        "install":
-          [
-            {
-              "id": "npm",
-              "kind": "npm",
-              "package": "@solana/kit",
-              "label": "Install Solana Kit (SDK v2)",
-            },
-            {
-              "id": "npm",
-              "kind": "npm", 
-              "package": "tweetnacl",
-              "label": "Install TweetNaCl for secure key handling",
-            },
-            {
-              "id": "npm",
-              "kind": "npm",
-              "package": "bs58",
-              "label": "Install bs58 for encoding",
-            },
-          ],
-      },
-  }
----
-
-# 🔗 OpenClaw Solana Connect v2.0
-
-> ⚠️ READ-ONLY for now - signing not implemented
-
-**Current Status:**
-- ✅ Read blockchain data (balances, transactions, tokens)
-- ⚠️ Write operations are SIMULATION ONLY
-
-**This is a development preview. Do not use with real funds.**
 
 ---
 
