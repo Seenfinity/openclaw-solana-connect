@@ -99,19 +99,19 @@ npm install
 ```javascript
 const { connectWallet, getBalance, sendSol } = require('./scripts/solana.js');
 
-// Connect with a private key
+// Connect with a private key (only address is returned - private key stays internal)
 const wallet = await connectWallet(process.env.AGENT_PRIVATE_KEY);
 
-// Check balance
+// Check balance using the address
 const balance = await getBalance(wallet.address);
 
-// Send SOL (with dry-run first!)
-const result = await sendSol(wallet.privateKey, toAddress, 1.0, { dryRun: true });
+// Send SOL (dry-run mode - simulation only by default)
+// Private key is used internally for signing, never exposed
+const result = await sendSol(process.env.AGENT_PRIVATE_KEY, toAddress, 1.0, { dryRun: true });
 console.log('Simulation:', result);
 
-// If OK, send for real
-const tx = await sendSol(wallet.privateKey, toAddress, 1.0);
-console.log('Transaction:', tx.signature);
+// NOTE: Real transactions require additional security measures
+// See Security section below
 ```
 
 ---

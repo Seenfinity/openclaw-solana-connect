@@ -1,13 +1,13 @@
 ---
 name: solana-connect
-description: OpenClaw Solana Connect — A toolkit for OpenClaw agents to interact with the Solana blockchain. Connect wallets, send transactions, check balances, manage tokens, and build Solana-powered autonomous agents. Perfect for OpenClaw users who want their AI agents to interact with Solana natively.
+description: OpenClaw Solana Connect — A toolkit for AI agents to interact with the Solana blockchain. Features private key protection - keys are never exposed to the agent. Check balances, generate addresses, sign transactions internally.
 metadata:
   {
     "openclaw":
       {
         "requires":
           {
-            "env": ["SOLANA_RPC_URL"],
+            "env": ["SOLANA_RPC_URL", "MAX_SOL_PER_TX", "MAX_TOKENS_PER_TX"],
           },
         "install":
           [
@@ -21,7 +21,13 @@ metadata:
               "id": "npm",
               "kind": "npm", 
               "package": "tweetnacl",
-              "label": "Install TweetNaCl for wallet generation",
+              "label": "Install TweetNaCl for secure key handling",
+            },
+            {
+              "id": "npm",
+              "kind": "npm",
+              "package": "bs58",
+              "label": "Install bs58 for encoding",
             },
           ],
       },
@@ -32,7 +38,15 @@ metadata:
 
 > The missing link between OpenClaw agents and Solana blockchain
 
-**Built for OpenClaw** — A purpose-built toolkit that enables autonomous AI agents running on OpenClaw to interact seamlessly with the Solana blockchain.
+## 🛡️ Security: Private Keys Are Protected
+
+**This toolkit NEVER exposes private keys to the agent.**
+
+- `connectWallet()` returns only the address
+- `generateWallet()` returns only the address
+- Private keys are used internally for signing - never returned or logged
+
+This prevents prompt injection attacks where a compromised agent could steal private keys.
 
 ---
 
