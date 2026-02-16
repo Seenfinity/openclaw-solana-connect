@@ -1,15 +1,28 @@
 # OpenClaw Solana Connect v2.0
 
-> The missing link between OpenClaw agents and Solana blockchain
+> The missing link between OpenClaw agents to Solana blockchain
 > **Now using @solana/kit (Solana Web3.js v2)**
 
 A purpose-built toolkit that enables autonomous AI agents running on OpenClaw to interact seamlessly with the Solana blockchain.
 
-## 🛡️ Security First
+## ⚠️ IMPORTANT: Current Limitations
 
-### Private Key Protection
+**This is a READ-ONLY toolkit for now.**
 
-**IMPORTANT:** This toolkit **NEVER returns private keys** to the agent. Private keys are handled internally for signing only.
+| Function | Status | Description |
+|----------|--------|-------------|
+| `getBalance()` | ✅ Works | Read SOL/token/NFT balances |
+| `getTransactions()` | ✅ Works | Read transaction history |
+| `getTokenAccounts()` | ✅ Works | Read token holdings |
+| `generateWallet()` | ✅ Works | Generate new addresses |
+| `connectWallet()` | ✅ Works | Validate addresses |
+| `sendSol()` | ⚠️ Simulation Only | Cannot send real transactions |
+
+**Signing is not yet implemented.** You can simulate transactions but cannot send real transactions.
+
+## 🛡️ Security: Private Keys Are Protected
+
+**This toolkit NEVER returns private keys to the agent.**
 
 - `connectWallet()` returns only the address
 - `generateWallet()` returns only the address  

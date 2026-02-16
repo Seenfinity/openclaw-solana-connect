@@ -7,7 +7,7 @@ metadata:
       {
         "requires":
           {
-            "env": ["SOLANA_RPC_URL", "MAX_SOL_PER_TX", "MAX_TOKENS_PER_TX", "AGENT_PRIVATE_KEY"],
+            "env": ["SOLANA_RPC_URL", "MAX_SOL_PER_TX", "MAX_TOKENS_PER_TX"],
           },
         "install":
           [
@@ -34,19 +34,15 @@ metadata:
   }
 ---
 
-# 🔗 OpenClaw Solana Connect
+# 🔗 OpenClaw Solana Connect v2.0
 
-> The missing link between OpenClaw agents and Solana blockchain
+> ⚠️ READ-ONLY for now - signing not implemented
 
-## 🛡️ Security: Private Keys Are Protected
+**Current Status:**
+- ✅ Read blockchain data (balances, transactions, tokens)
+- ⚠️ Write operations are SIMULATION ONLY
 
-**This toolkit NEVER exposes private keys to the agent.**
-
-- `connectWallet()` returns only the address
-- `generateWallet()` returns only the address
-- Private keys are used internally for signing - never returned or logged
-
-This prevents prompt injection attacks where a compromised agent could steal private keys.
+**This is a development preview. Do not use with real funds.**
 
 ---
 
