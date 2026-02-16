@@ -1,21 +1,21 @@
 ---
 name: solana-connect
-description: OpenClaw Solana Connect — A READ-ONLY toolkit for AI agents to query Solana blockchain. Check balances, transactions, tokens. NO signing.
+description: OpenClaw Solana Connect — Secure toolkit for AI agents to interact with Solana blockchain. Features private key protection, max limits, dry-run mode, and human confirmation for large transactions.
 metadata:
   {
     "openclaw":
       {
         "requires":
           {
-            "env": ["SOLANA_RPC_URL"],
+            "env": ["SOLANA_RPC_URL", "MAX_SOL_PER_TX", "MAX_TOKENS_PER_TX", "HUMAN_CONFIRMATION_THRESHOLD"],
           },
         "install":
           [
             {
               "id": "npm",
               "kind": "npm",
-              "package": "@solana/kit",
-              "label": "Install Solana Kit",
+              "package": "@solana/web3.js",
+              "label": "Install Solana Web3.js",
             },
             {
               "id": "npm",
@@ -34,30 +34,28 @@ metadata:
   }
 ---
 
-# 🔗 OpenClaw Solana Connect v2.0
+# 🔗 OpenClaw Solana Connect v3.0
 
-> ⚠️ READ-ONLY TOOLKIT - NO SIGNING
+> Secure toolkit for AI agents to interact with Solana blockchain
 
-This is a **read-only** toolkit. **Cannot send real transactions.**
+## 🛡️ Security Features
 
-## Why These Dependencies?
-
-- `@solana/kit` - RPC queries only
-- `tweetnacl` / `bs58` - Used ONLY for generating wallet addresses (Ed25519 key generation)
-- NO signing capability - Cannot sign or broadcast transactions
-
-The crypto libraries are used to derive addresses from seeds (wallet generation), NOT for signing transactions.
+- **Private Key Protection** - Keys never exposed to agent
+- **Max Limits** - Configurable transaction limits
+- **Dry-Run Mode** - Simulate before sending (default)
+- **Human Confirmation** - Required for large transactions
+- **Testnet Default** - Safe by default
 
 ## What Works
 
-| Function | Status |
-|----------|--------|
-| `getBalance()` | ✅ Works |
-| `getTransactions()` | ✅ Works |
-| `getTokenAccounts()` | ✅ Works |
-| `generateWallet()` | ✅ Works |
-| `connectWallet()` | ✅ Works |
-| `sendSol()` | ⚠️ Simulation only |
+| Function | Status | Description |
+|----------|--------|-------------|
+| `generateWallet()` | ✅ Works | Generate wallet addresses |
+| `connectWallet()` | ✅ Works | Validate wallet addresses |
+| `getBalance()` | ✅ Works | Read SOL/token balances |
+| `getTransactions()` | ✅ Works | Read transaction history |
+| `getTokenAccounts()` | ✅ Works | Read token holdings |
+| `sendSol()` | ✅ Works | Send SOL (with security) |
 
 ## Installation
 
@@ -67,24 +65,45 @@ clawhub install solana-connect
 
 ## Environment Variables
 
-- `SOLANA_RPC_URL` - RPC endpoint (required)
-- Examples: `https://api.testnet.solana.com` or `https://api.mainnet-beta.solana.com`
+- `SOLANA_RPC_URL` - RPC endpoint (default: testnet)
+- `MAX_SOL_PER_TX` - Max SOL per transaction (default: 10)
+- `MAX_TOKENS_PER_TX` - Max tokens per transaction (default: 10000)
+- `HUMAN_CONFIRMATION_THRESHOLD` - SOL amount requiring human confirmation (default: 1)
 
 ## Usage
 
 ```javascript
-const { getBalance, getTransactions } = require('./scripts/solana.js');
+const { generateWallet, getBalance, sendSol, getConfig } = require('./scripts/solana.js');
 
-const balance = await getBalance('SOLANA_ADDRESS');
-const txs = await getTransactions('SOLANA_ADDRESS');
+// Generate wallet (address only - private key protected)
+const wallet = generateWallet();
+console.log('Address:', wallet.address);
+
+// Check balance
+const balance = await getBalance(wallet.address);
+
+// Send SOL (DRY-RUN by default - simulation only)
+const result = await sendSol(privateKey, toAddress, 0.5, { dryRun: true });
+console.log('Simulation:', result);
+
+// Send real transaction
+const tx = await sendSol(privateKey, toAddress, 0.5, { dryRun: false, skipConfirmation: true });
+console.log('Signature:', tx.signature);
 ```
 
-## Security
+## Security Options
 
-- No private keys required for read operations
-- No signing capability
-- Use testnet for testing
+```javascript
+// Dry-run (simulation) - safe, doesn't send
+await sendSol(key, to, amount, { dryRun: true });
+
+// Real transaction - requires explicit flag
+await sendSol(key, to, amount, { dryRun: false });
+
+// Skip human confirmation (for automated agents)
+await sendSol(key, to, amount, { dryRun: false, skipConfirmation: true });
+```
 
 ---
 
-**This tool cannot send real transactions.** Use for blockchain data queries only.
+**Security:** Never hardcode private keys. Use environment variables.

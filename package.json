@@ -1,13 +1,13 @@
 {
   "name": "@seenfinity/solana-connect",
-  "version": "2.0.7",
-  "description": "OpenClaw Solana Connect - READ-ONLY toolkit for querying Solana blockchain",
+  "version": "3.0.0",
+  "description": "OpenClaw Solana Connect - Secure toolkit for AI agents to interact with Solana blockchain",
   "main": "scripts/solana.js",
   "scripts": {
     "test": "node test.js"
   },
   "dependencies": {
-    "@solana/kit": "^2.0.0",
+    "@solana/web3.js": "^1.98.0",
     "bs58": "^6.0.0",
     "tweetnacl": "^1.0.3"
   },
@@ -16,7 +16,7 @@
     "blockchain",
     "openclaw",
     "agent",
-    "read-only"
+    "trading"
   ],
   "author": "Seenfinity",
   "license": "MIT"
