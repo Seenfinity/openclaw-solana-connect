@@ -84,11 +84,11 @@ async function test5() {
   }
 }
 
-// Test 6: Connect wallet with private key
+// Test 6: Connect wallet with address (not private key - read only tool)
 function test6() {
-  console.log('Test 6: Connect wallet with private key...');
+  console.log('Test 6: Connect wallet with address...');
   try {
-    // Use a fresh generated key for testing (never use real keys in tests)
+    // Generate a fresh wallet for testing
     const testWallet = generateWallet();
     const wallet = connectWallet(testWallet.address);
     if (wallet.address && wallet.address.length > 30) {
