@@ -7,7 +7,7 @@ metadata:
       {
         "requires":
           {
-            "env": ["SOLANA_RPC_URL", "MAX_SOL_PER_TX", "MAX_TOKENS_PER_TX"],
+            "env": ["SOLANA_RPC_URL", "MAX_SOL_PER_TX", "MAX_TOKENS_PER_TX", "AGENT_PRIVATE_KEY"],
           },
         "install":
           [
