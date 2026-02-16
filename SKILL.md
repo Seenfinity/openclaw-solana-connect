@@ -40,6 +40,14 @@ metadata:
 
 This is a **read-only** toolkit. **Cannot send real transactions.**
 
+## Why These Dependencies?
+
+- `@solana/kit` - RPC queries only
+- `tweetnacl` / `bs58` - Used ONLY for generating wallet addresses (Ed25519 key generation)
+- NO signing capability - Cannot sign or broadcast transactions
+
+The crypto libraries are used to derive addresses from seeds (wallet generation), NOT for signing transactions.
+
 ## What Works
 
 | Function | Status |
@@ -60,7 +68,7 @@ clawhub install solana-connect
 ## Environment Variables
 
 - `SOLANA_RPC_URL` - RPC endpoint (required)
-- Examples: `https://api.testnet.solana.com` or `https://api.mainnet-beta.solola.com`
+- Examples: `https://api.testnet.solana.com` or `https://api.mainnet-beta.solana.com`
 
 ## Usage
 

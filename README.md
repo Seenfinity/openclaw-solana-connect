@@ -2,6 +2,14 @@
 
 > ⚠️ READ-ONLY TOOLKIT - Cannot send real transactions
 
+## Why These Dependencies?
+
+- `@solana/kit` - RPC queries only
+- `tweetnacl` / `bs58` - Used ONLY for generating wallet addresses (Ed25519)
+- NO signing capability - Cannot sign or broadcast transactions
+
+The crypto libraries generate addresses from seeds, NOT for signing.
+
 ## Overview
 
 A **read-only** toolkit for AI agents to query Solana blockchain data. **Signing and real transactions are NOT supported.**
